@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef} from 'react';
-import logo from './logo.svg';
 
-import { RXForm, rootReducer, injectDataToComponent, useRXInput } from 'rx-forms';
-import { setValueAction, useFocus } from 'rx-forms';
+import { RXForm, useRXInput } from 'rx-forms';
 
-import { Col, Container, Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Col, Container, Button, Form, FormGroup, Label, Input } from 'reactstrap';
 
 import InputMask from 'react-input-mask';
+
+import { BasicLayout, BasicButtons, BasicNumberComponent, BasicTextComponent, PhoneNumberComponent, ReactStrapForm} from './components'
 
 import './App.css';
 
@@ -17,7 +17,7 @@ const model = {
     {name: "name", type: "text", label: "Nome:"},
     {name: "email", type: "text", label: "Mail:"},
     {name: "phone", type: "phone", label: "Numero di Telefono:"},
-    {name: "age", type: "number", label: "Età:"},
+    {name: "age", type: "number", label: "Età:", min: 18, validators: ["rated18"]},
   ],
   buttons: [
     {name: "submit", type: "submit", label: "Invia", color: "primary"},
@@ -25,103 +25,19 @@ const model = {
   ]
 }
 
-const validators = [];
+const validators = {
+  rated18: (value, name)=>{
+    console.log(`in rated18 with value`, value, ` and name `, name);
+    if(value<18){
+      console.log(`error`)
+      return {result: false, error: "rated18 fail"};
+    }
+    console.log('success')
+    return {result: true};
+  }
+};
 
- const BasicButtons = (props) => {
-
-  const buttons = props.model.buttons;
-  
-  console.log(`found buttons: `, buttons);
-  return (
-    <React.Fragment>
-      {buttons.map((button, index)=>{
-
-        const color = button.color ? button.color : "primary";
-
-        return <Button block color={color} key={index} type={`${button.type}`} onClick={(e)=>{e.preventDefault(); props.events.onButtonPress(e, button.name);}} >{`${button.label}`}</Button>
-      })}
-    </React.Fragment>
-  )
-}
-
-const BasicLayout = (props) => {
-  return (
-    <div>
-
-        {/* <Form> */}
-          {props.model.groups.map((input, index)=> {
-          
-          const Component = props.components[input.type];
-
-          return (
-            <FormGroup row key={`${index}`}>
-              <Label style={{textAlign: 'left'}} sm={2} for={`${input.name}`}>{input.label}</Label>
-              <Col sm={10}>
-                {props.components[input.type] !== undefined ? (
-                    <Component model={input} store={props.store} />
-                ):(
-                  <Input type={`${input.type}`} name={`${input.name}`} id={`${input.name}`}></Input>
-                )}
-              </Col>
-            </FormGroup>
-            
-          )})}
-
-        {/* </Form> */}
-    </div>
-  )
-}
-
-const ReactStrapForm = (props) => {
-  return (
-    <React.Fragment>
-
-      <span style={{color: 'black', marginTop: 40, marginBottom: 40, display: 'block'}}>RXForm Reactstrap</span>
-
-      <div style={{backgroundColor: "#eeeeee", padding:12, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
-        <Form>
-          {props.children}
-        </Form>
-
-      </div>
-
-    </React.Fragment>
-  )
-}
-
-const BasicTextComponent = (props) => {
-
-  const [value, setValue, ref] = useRXInput(props.store, props.model);
-
-  return (
-    <React.Fragment>
-        <Input innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
-    </React.Fragment>
-  )
-}
-
-const PhoneNumberComponent = (props) => {
-
-  const [value, setValue, ref] = useRXInput(props.store, props.model);
-
-  console.log(`in render2 for `, props.model.name);
-  return (
-    <React.Fragment>
-        <Input 
-          innerRef={ref} 
-          type="text"
-          name={`${props.model.name}`} 
-          id={`${props.model.name}`} 
-          value={value} 
-          onChange={(e) => setValue(e.target.value)}
-          mask="+3\9 999 9999 999"
-          maskChar="_"
-          alwaysShowMask={true}
-          tag={InputMask}
-        />
-    </React.Fragment>
-  )
-}
+ 
 
 const layouts = {
   default: BasicLayout
@@ -129,7 +45,8 @@ const layouts = {
 
 const components = {
   text: BasicTextComponent,
-  phone: PhoneNumberComponent
+  phone: PhoneNumberComponent,
+  number: BasicNumberComponent
 }
 
 export const  App = () => { 
@@ -137,11 +54,6 @@ export const  App = () => {
   const form = useRef(null);
   const[store, setStore] = useState(null);
   const [errors, setErrors] = useState([]);
-
-  const onButtonClick = () => {
-    // `current` points to the mounted text input element
-    console.log(`in click with: `, form.current.submit());
-  };
 
   useEffect(()=>{
 
@@ -161,22 +73,23 @@ export const  App = () => {
         buttonsComponent={BasicButtons}
         events={{
           onButtonPress: (e, name) => {
-            console.log(`in onButtonPress with `, name);
+            console.log(`in onButtonPress with `, name, form.current.submit());
+          },
+          onValidation: (errors)=>{
+            console.log(`in onValidation: `, JSON.stringify(errors));
+            setErrors(errors);            
+          },
+          onValuesChange:(values)=>{
+            console.log('in onValuesChange: ', values);
           }
         }}
         data={{
           name: "Francesco",
           surname: "Cabras",
           email: "francesco.cabras@gmail.com",
+          age: 39
         }} 
         validators={validators}
-        onValidation={(errors)=>{
-          console.log(`in onValidation: `, JSON.stringify(errors));
-          setErrors(errors);
-        }}
-        onValuesChange={(values)=>{
-          console.log('in onValuesChange: ', values);
-        }}
       />
     </Container>
   );
