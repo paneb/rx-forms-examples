@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React from 'react';
 
-import { RXForm, useRXInput } from 'rx-forms';
+import { useRXInput } from 'rx-forms';
 
-import { Col, Container, Button, Form, FormGroup, Label, Input, FormFeedback, FormText } from 'reactstrap';
+import { Col, Button, Form, FormGroup, Label, Input, FormFeedback, Row } from 'reactstrap';
 
 import InputMask from 'react-input-mask';
 
@@ -17,7 +17,7 @@ export const BasicButtons = (props) => {
   
           const color = button.color ? button.color : "primary";
   
-          return <Button block color={color} key={index} type={`${button.type}`} onClick={(e)=>{e.preventDefault(); props.events.onButtonPress(e, button.name);}} >{`${button.label}`}</Button>
+          return <Button block color={color} key={index} type={`${button.type}`} onClick={(e)=>{e.preventDefault(); props.events.onButtonPress(e, button.name);}} >{`${props.events.onLocalize(button.label)}`}</Button>
         })}
       </React.Fragment>
     )
@@ -26,23 +26,28 @@ export const BasicButtons = (props) => {
 export const BasicLayout = (props) => {
     return (
       <div>
-  
-          {/* <Form> */}
+            <Row>
+              <Col md={10}></Col>
+              <Col md={1}>
+                <a href="">EN</a>
+              </Col>
+              <Col md={1}>
+                <a href="">IT</a>
+              </Col>
+            </Row>
             {props.model.groups.map((input, index)=> {
             
             const Component = props.components[input.type] ? props.components[input.type] : props.components["default"];
   
             return (
               <FormGroup row key={`${index}`}>
-                <Label style={{textAlign: 'left'}} sm={2} for={`${input.name}`}>{input.label}</Label>
+                <Label style={{textAlign: 'left'}} sm={2} for={`${input.name}`}>{props.events.onLocalize(input.label)}</Label>
                 <Col sm={10}>
                     <Component model={input} store={props.store} />
                 </Col>
               </FormGroup>
               
             )})}
-  
-          {/* </Form> */}
       </div>
     )
   }
