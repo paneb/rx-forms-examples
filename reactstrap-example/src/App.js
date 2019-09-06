@@ -25,9 +25,9 @@ const locales = {
 const model = {
   groups: [
     {name: "surname", type: "text", label: "Cognome:", validators: ["empty"]},
-    {name: "name", type: "text", label: "Nome:"},
+    {name: "name", type: "text", label: "Nome:", validators: ["async"]},
     {name: "email", type: "text", label: "Mail:"},
-    {name: "phone", type: "phone", label: "Numero di Telefono:"},
+    {name: "phone", type: "phone", label: "Numero di Telefono:", validators: ["async"]},
     {name: "age", type: "number", label: "Età:", min: 18, validators: ["rated18"]},
   ],
   buttons: [
@@ -48,6 +48,9 @@ const validators = {
     return {valid: true};
   },
   empty: (value)=>value?{valid: true}:{valid:false, error: 'empty'},
+  async: ()=>new Promise(resolve => {
+    setTimeout(() => resolve({valid:false, error: "async timeout"}), 2000);
+  })
 
 };
 

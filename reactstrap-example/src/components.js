@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useRXInput } from 'rx-forms';
 
-import { Col, Button, Form, FormGroup, Label, Input, FormFeedback, Row } from 'reactstrap';
+import { Col, Button, Form, FormGroup, Label, Input, FormFeedback, Row, Spinner } from 'reactstrap';
 
 import InputMask from 'react-input-mask';
 
@@ -77,13 +77,15 @@ export const ReactStrapForm = (props) => {
   
 export const BasicTextComponent = (props) => {
   
-    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.validators);
+    const [value, setValue, ref, errors, onValidation] = useRXInput(props.store, props.model, props.validators);
   
     return (
       <React.Fragment>
-          <Input invalid={errors? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
+          <Input valid={errors? false : true} invalid={errors? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
           <FormFeedback>{JSON.stringify(errors)}</FormFeedback>
-
+          {onValidation &&
+            <span>Valido</span>
+          } 
 
       </React.Fragment>
     )
@@ -107,15 +109,28 @@ export const BasicNumberComponent = (props) => {
   
 export const  PhoneNumberComponent = (props) => {
   
-    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.validators);
+    const [value, setValue, ref, errors, onValidation] = useRXInput(props.store, props.model, props.validators);
   
-    console.log(`with errors: `, errors);
+    console.log(`with errors in phonenumber: `, errors);
 
     console.log(`in render2 for `, props.model.name);
     return (
       <React.Fragment>
-          <Input 
-            innerRef={ref} 
+        <InputMask mask="+3\9 999 9999 999" alwaysShowMask={true} maskChar="_" value={value} name={`${props.model.name}`} id={`${props.model.name}`} onChange={(e) => setValue(e.target.value)}>
+          {(inputProps) => 
+            <Input 
+              invalid={errors? true : false} 
+              type="text"
+              innerRef={ref} 
+              name={`${props.model.name}`} 
+              id={`${props.model.name}`} 
+          />
+          }
+        </InputMask>
+        <FormFeedback>{JSON.stringify(errors)}</FormFeedback>
+        <span></span>
+          {/* <Input 
+            inputRef={ref} 
             type="text"
             name={`${props.model.name}`} 
             id={`${props.model.name}`} 
@@ -125,8 +140,15 @@ export const  PhoneNumberComponent = (props) => {
             maskChar="_"
             alwaysShowMask={true}
             tag={InputMask}
-          />
-          <span>{JSON.stringify(errors)}</span>
+          /> */}
+
+
+
+
+
+          {onValidation &&
+            <div><span>Valido </span><Spinner color="warning" size="sm" /></div>
+          }
       </React.Fragment>
     )
   }
