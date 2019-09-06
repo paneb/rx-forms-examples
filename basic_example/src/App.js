@@ -7,8 +7,8 @@ import { RXForm } from 'rx-forms';
 
 const model = {
   groups: [
-    {name: "surname", type: "text", label: "Cognome:"},
-    {name: "name", type: "text", label: "Nome:"},
+    {name: "surname", type: "text", label: "Cognome:", validators: ["empty"]},
+    {name: "name", type: "text", label: "Nome:", validators: ["test", "test2"]},
     {name: "email", type: "text", label: "Mail:"},
     {name: "phone", type: "phone", label: "Numero di Telefono:"},
     {name: "age", type: "number", label: "Età:"},
@@ -42,24 +42,34 @@ export const App = () => {
     console.log(`with form: `, form);
   },[])  
 
+  const validators = {
+    empty: (value)=>value?{valid: true}:{valid:false, error: 'empty'},
+    test: ()=>({valid: false, error: "invalid string"}),
+    test2: ()=>new Promise(resolve => {
+      setTimeout(() => resolve({valid:false, error: "async timeout"}), 2000);
+    })
+  }
+
   return (
     <div className="App">
-      <span>Test2</span>
       <RXForm
         // ref={form}
         model={model}
+        validators={validators}
         data={{
           name: "Francesco",
           surname: "Cabras",
           email: "francesco.cabras@gmail.com"
         }}
-        onValidation={(errors)=>{
-          console.log(`in onValidation: `, JSON.stringify(errors));
-          setErrors(errors);
+        events={{
+          onValidation:(errors)=>{
+            console.log(`in onValidation: `, JSON.stringify(errors));
+            setErrors(errors);
+          },
+          onValuesChange:(values)=>{
+            console.log('in onValuesChange: ', values);
+          }   
         }}
-        onValuesChange={(values)=>{
-          console.log('in onValuesChange: ', values);
-        }}                
       />
     </div>
   );

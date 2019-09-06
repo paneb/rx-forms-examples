@@ -13,12 +13,18 @@ export const BasicButtons = (props) => {
     console.log(`found buttons: `, buttons);
     return (
       <React.Fragment>
+        <Row>
         {buttons.map((button, index)=>{
   
           const color = button.color ? button.color : "primary";
   
-          return <Button block color={color} key={index} type={`${button.type}`} onClick={(e)=>{e.preventDefault(); props.events.onButtonPress(e, button.name);}} >{`${props.events.onLocalize(button.label)}`}</Button>
+          return (
+            <Col key={index}>
+              <Button block color={color} type={`${button.type}`} onClick={(e)=>{e.preventDefault(); props.events.onButtonPress(e, button.name);}} >{`${props.events.onLocalize(button.label)}`}</Button>
+            </Col>
+          )
         })}
+        </Row>
       </React.Fragment>
     )
   }
@@ -29,10 +35,10 @@ export const BasicLayout = (props) => {
             <Row>
               <Col md={10}></Col>
               <Col md={1}>
-                <a href="">EN</a>
+                <a href="#" onClick={()=>props.events.onChangeCurrentLocale("en-US")}>EN</a>
               </Col>
               <Col md={1}>
-                <a href="">IT</a>
+                <a href="#" onClick={()=>props.events.onChangeCurrentLocale("it-IT")}>IT</a>
               </Col>
             </Row>
             {props.model.groups.map((input, index)=> {
@@ -43,7 +49,7 @@ export const BasicLayout = (props) => {
               <FormGroup row key={`${index}`}>
                 <Label style={{textAlign: 'left'}} sm={2} for={`${input.name}`}>{props.events.onLocalize(input.label)}</Label>
                 <Col sm={10}>
-                    <Component model={input} store={props.store} />
+                    <Component model={input} store={props.store} validators={props.validators} />
                 </Col>
               </FormGroup>
               
@@ -71,18 +77,21 @@ export const ReactStrapForm = (props) => {
   
 export const BasicTextComponent = (props) => {
   
-    const [value, setValue, ref] = useRXInput(props.store, props.model, props.model.validators);
+    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.validators);
   
     return (
       <React.Fragment>
-          <Input innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
+          <Input invalid={errors? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
+          <FormFeedback>{JSON.stringify(errors)}</FormFeedback>
+
+
       </React.Fragment>
     )
   }
   
 export const BasicNumberComponent = (props) => {
   
-    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.model.validators);
+    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.validators);
     console.log(`with errors: `, errors);
 
     const setNumberValue = (value)=>setValue(parseInt(value));
@@ -98,7 +107,7 @@ export const BasicNumberComponent = (props) => {
   
 export const  PhoneNumberComponent = (props) => {
   
-    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.model.validators);
+    const [value, setValue, ref, errors] = useRXInput(props.store, props.model, props.validators);
   
     console.log(`with errors: `, errors);
 

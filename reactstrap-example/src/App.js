@@ -24,7 +24,7 @@ const locales = {
 
 const model = {
   groups: [
-    {name: "surname", type: "text", label: "Cognome:"},
+    {name: "surname", type: "text", label: "Cognome:", validators: ["empty"]},
     {name: "name", type: "text", label: "Nome:"},
     {name: "email", type: "text", label: "Mail:"},
     {name: "phone", type: "phone", label: "Numero di Telefono:"},
@@ -33,6 +33,7 @@ const model = {
   buttons: [
     {name: "submit", type: "submit", label: "Invia", color: "primary"},
     {name: "clear", type: "submit", label: "Cancella", color: "success"},
+    {name: "pippo", type: "submit", label: "Pippo", color: "warning"}
   ]
 }
 
@@ -41,11 +42,13 @@ const validators = {
     console.log(`in rated18 with value`, value, ` and name `, name);
     if(value<18){
       console.log(`error`)
-      return {result: false, error: "rated18 fail"};
+      return {valid: false, error: "rated18 fail"};
     }
     console.log('success')
-    return {result: true};
-  }
+    return {valid: true};
+  },
+  empty: (value)=>value?{valid: true}:{valid:false, error: 'empty'},
+
 };
 
  
@@ -60,17 +63,21 @@ const components = {
   number: BasicNumberComponent
 }
 
-const loadLocales = (setInitDone) => {
+const loadLocales = (setInitDone, currentLocale, forceUpdate) => {
+
+    console.log(`in loadLocales with `, currentLocale);
+
     // init method will load CLDR locale data according to currentLocale
     // react-intl-universal is singleton, so you should init it only once in your app
     intl.init({
-      currentLocale: 'en-US', // TODO: determine locale here
+      currentLocale: currentLocale, // TODO: determine locale here
       locales,
     })
     .then(() => {
       // After loading CLDR locale data, start to render
       setInitDone(true);
       console.log('after set init done');
+      forceUpdate(currentLocale);
     });
 }
 
@@ -80,26 +87,28 @@ export const  App = () => {
   const[store, setStore] = useState(null);
   const [errors, setErrors] = useState([]);
   const [ initDone, setInitDone] = useState(false);
+  const [ currentLocale, setCurrentLocale ] = useState("en-US");
+  const [, forceUpdate] = useState();
 
-  
   useEffect(()=>{
 
-      loadLocales(setInitDone);
+      // setCurrentLocale("en-US");
+      console.log(`before loadLocales`);
+      
+      loadLocales(setInitDone, currentLocale, forceUpdate);
 
       if(form.current){
         console.log(`form current: `, form.current);
         setStore(form.current.store.getState().errors);
       }
-
-    
-
-
-  }, []);
+  }, [currentLocale]);
   
   return (
     
     <Container className="App">
       {initDone &&
+        <React.Fragment>
+        <span>Current: {currentLocale}</span>
         <RXForm
           formComponent={ReactStrapForm}
           ref={form}
@@ -120,6 +129,10 @@ export const  App = () => {
             },
             onLocalize:(value, params)=>{
               return intl.get(value).d(value);
+            },
+            onChangeCurrentLocale:(value)=>{
+              console.log(`in onChangeCurrentLocale with `, value);
+              setCurrentLocale(value)
             }
           }}
           data={{
@@ -130,6 +143,7 @@ export const  App = () => {
           }} 
           validators={validators}
         />
+        </React.Fragment>
       }
     </Container>
   );

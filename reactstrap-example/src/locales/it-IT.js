@@ -1,3 +1,9 @@
 module.exports = {
-    "Mail:": "Email Address:"
+    "Mail:": "Mail:",
+    "Cognome:": "Cognome:",
+    "Nome:" : "Nome:",
+    "Numero di Telefono:" : "Numero di Telefono:",
+    "Età:" : "Età:",
+    "Invia": "Invia",
+    "Cancella": "Cancella"
 }
