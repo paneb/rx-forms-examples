@@ -49,7 +49,7 @@ export const BasicLayout = (props) => {
               <FormGroup row key={`${index}`}>
                 <Label style={{textAlign: 'left'}} sm={2} for={`${input.name}`}>{props.events.onLocalize(input.label)}</Label>
                 <Col sm={10}>
-                    <Component model={input} store={props.store} validators={props.validators} />
+                    <Component model={input} store={props.store} validators={props.validators} events={props.events} />
                 </Col>
               </FormGroup>
               
@@ -59,34 +59,50 @@ export const BasicLayout = (props) => {
   }
   
 export const ReactStrapForm = (props) => {
-    return (
-      <React.Fragment>
-  
-        <span style={{color: 'black', marginTop: 40, marginBottom: 40, display: 'block'}}>RXForm Reactstrap</span>
-  
-        <div style={{backgroundColor: "#eeeeee", padding:12, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
-          <Form>
-            {props.children}
-          </Form>
-  
-        </div>
-  
-      </React.Fragment>
-    )
-  }
+  return (
+    <React.Fragment>
+
+      <span style={{color: 'black', marginTop: 40, marginBottom: 40, display: 'block'}}>RXForm Reactstrap</span>
+
+      <div style={{backgroundColor: "#eeeeee", padding:12, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
+        <Form>
+          {props.children}
+        </Form>
+
+      </div>
+
+    </React.Fragment>
+  )
+}
+
+export const AsyncValidationWrapper = (props) => {
+
+  return (
+    // <div style={{borderWidth: 1, borderStyle: "solid", borderColor: "red", backgroundColor: "red"}}>
+    <div>
+      {props.onValidation &&
+        <Spinner color="secondary" size="sm" style={{zIndex: 1000, position: 'absolute', marginTop: 'auto', marginBottom: 'auto', top: 0, bottom: 0, right: 26}} />
+      }
+      {props.children}
+    </div>
+
+  )
+}
+
   
 export const BasicTextComponent = (props) => {
   
     const [value, setValue, ref, errors, onValidation] = useRXInput(props.store, props.model, props.validators);
   
+    const showValid = props.model.showValid ? props.model.showValid : false;
+
     return (
       <React.Fragment>
-          <Input valid={errors? false : true} invalid={errors? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
-          <FormFeedback>{JSON.stringify(errors)}</FormFeedback>
-          {onValidation &&
-            <span>Valido</span>
-          } 
-
+        <AsyncValidationWrapper onValidation={onValidation}>
+          <Input valid={onValidation ? false : errors ? false : value == "" ? false : showValid ? true : false} invalid={onValidation ? false : errors ? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
+          {/* <FormFeedback>{JSON.stringify(errors)}</FormFeedback> */}
+          <FormFeedback>{errors && errors.map((error)=><span>{props.events.onLocalize(error)} </span>)}</FormFeedback>
+        </AsyncValidationWrapper>
       </React.Fragment>
     )
   }

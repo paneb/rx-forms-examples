@@ -24,8 +24,8 @@ const locales = {
 
 const model = {
   groups: [
-    {name: "surname", type: "text", label: "Cognome:", validators: ["empty"]},
-    {name: "name", type: "text", label: "Nome:", validators: ["async"]},
+    {name: "surname", type: "text", label: "Cognome:", showValid: false, validators: ["empty"]},
+    {name: "name", type: "text", label: "Nome:", showValid: true, validators: ["async"]},
     {name: "email", type: "text", label: "Mail:"},
     {name: "phone", type: "phone", label: "Numero di Telefono:", validators: ["async"]},
     {name: "age", type: "number", label: "Età:", min: 18, validators: ["rated18"]},
@@ -47,9 +47,16 @@ const validators = {
     console.log('success')
     return {valid: true};
   },
-  empty: (value)=>value?{valid: true}:{valid:false, error: 'empty'},
+  empty: (value)=>value?{valid: true}:{valid:false, error: 'ERROR_EMPTY'},
   async: ()=>new Promise(resolve => {
-    setTimeout(() => resolve({valid:false, error: "async timeout"}), 2000);
+    setTimeout(() => {
+      const rand = Boolean(Math.round(Math.random()));
+      if(rand){
+        resolve({valid:true});
+      }else{
+        resolve({valid:false, error: "async timeout"});
+      }
+    }, 2000);
   })
 
 };
@@ -139,7 +146,7 @@ export const  App = () => {
             }
           }}
           data={{
-            name: "Francesco",
+            name: "",
             surname: "Cabras",
             email: "francesco.cabras@gmail.com",
             age: 39

@@ -5,5 +5,6 @@ module.exports = {
     "Numero di Telefono:" : "Phone Number:",
     "Età:" : "Age:",
     "Invia": "Send",
-    "Cancella": "Clear"
+    "Cancella": "Clear",
+    "ERROR_EMPTY": "Should not be empty"
 }
