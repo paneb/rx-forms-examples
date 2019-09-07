@@ -24,21 +24,22 @@ const locales = {
 
 const model = {
   groups: [
+    {name: "username", type: "text", label: "Username:", showValid: false, validators: ["empty", "async"]},
     {name: "surname", type: "text", label: "Cognome:", showValid: false, validators: ["empty"]},
-    {name: "name", type: "text", label: "Nome:", showValid: true, validators: ["async"]},
-    {name: "email", type: "text", label: "Mail:"},
-    {name: "phone", type: "phone", label: "Numero di Telefono:", validators: ["async"]},
+    {name: "name", type: "text", label: "Nome:", showValid: true, validators: ["empty"]},
+    {name: "email", type: "text", label: "Mail:", validators: ["empty"]},
+    {name: "emailconfirm", type: "text", label: "Conferma Mail:", validators: ["emailCheck", "empty"]},
+    {name: "phone", type: "phone", label: "Numero di Telefono:", validators: []},
     {name: "age", type: "number", label: "Età:", min: 18, validators: ["rated18"]},
   ],
   buttons: [
     {name: "submit", type: "submit", label: "Invia", color: "primary"},
     {name: "clear", type: "submit", label: "Cancella", color: "success"},
-    {name: "pippo", type: "submit", label: "Pippo", color: "warning"}
   ]
 }
 
 const validators = {
-  rated18: (value, name)=>{
+  rated18: (value, name, values)=>{
     console.log(`in rated18 with value`, value, ` and name `, name);
     if(value<18){
       console.log(`error`)
@@ -48,16 +49,25 @@ const validators = {
     return {valid: true};
   },
   empty: (value)=>value?{valid: true}:{valid:false, error: 'ERROR_EMPTY'},
-  async: ()=>new Promise(resolve => {
+  async: (value, name, values)=>new Promise(resolve => {
     setTimeout(() => {
       const rand = Boolean(Math.round(Math.random()));
       if(rand){
         resolve({valid:true});
       }else{
-        resolve({valid:false, error: "async timeout"});
+        resolve({valid:false, error: "USERNAME_EXISTS_ERROR"});
       }
     }, 2000);
-  })
+  }),
+  emailCheck: (value, name, values)=>{
+
+    console.log(`in emailCheck: `, value, values)
+    if (value!==values.email){
+      return {valid:false, error: "ERROR_EMAIL"}
+    }else{
+      return {valid: true};
+    }
+  }
 
 };
 
@@ -94,8 +104,8 @@ const loadLocales = (setInitDone, currentLocale, forceUpdate) => {
 export const  App = () => { 
 
   const form = useRef(null);
-  const[store, setStore] = useState(null);
-  const [errors, setErrors] = useState([]);
+  const[, setStore] = useState(null);
+  const [, setErrors] = useState([]);
   const [ initDone, setInitDone] = useState(false);
   const [ currentLocale, setCurrentLocale ] = useState("en-US");
   const [, forceUpdate] = useState();
@@ -118,7 +128,6 @@ export const  App = () => {
     <Container className="App">
       {initDone &&
         <React.Fragment>
-        <span>Current: {currentLocale}</span>
         <RXForm
           formComponent={ReactStrapForm}
           ref={form}

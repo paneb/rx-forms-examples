@@ -34,11 +34,9 @@ export const BasicLayout = (props) => {
       <div>
             <Row>
               <Col md={10}></Col>
-              <Col md={1}>
-                <a href="#" onClick={()=>props.events.onChangeCurrentLocale("en-US")}>EN</a>
-              </Col>
-              <Col md={1}>
-                <a href="#" onClick={()=>props.events.onChangeCurrentLocale("it-IT")}>IT</a>
+              <Col md={2} className="mb-2">
+                <Button className="float-right" onClick={()=>props.events.onChangeCurrentLocale("en-US")}>EN</Button>
+                <Button className="float-right" href="#" onClick={()=>props.events.onChangeCurrentLocale("it-IT")}>IT</Button>
               </Col>
             </Row>
             {props.model.groups.map((input, index)=> {
@@ -99,9 +97,9 @@ export const BasicTextComponent = (props) => {
     return (
       <React.Fragment>
         <AsyncValidationWrapper onValidation={onValidation}>
-          <Input valid={onValidation ? false : errors ? false : value == "" ? false : showValid ? true : false} invalid={onValidation ? false : errors ? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
+          <Input valid={onValidation ? false : errors ? false : value === "" ? false : showValid ? true : false} invalid={onValidation ? false : errors ? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
           {/* <FormFeedback>{JSON.stringify(errors)}</FormFeedback> */}
-          <FormFeedback>{errors && errors.map((error)=><span>{props.events.onLocalize(error)} </span>)}</FormFeedback>
+          {errors && errors.map((error, index)=><FormFeedback key={index}>{props.events.onLocalize(error)}</FormFeedback>)}
         </AsyncValidationWrapper>
       </React.Fragment>
     )
