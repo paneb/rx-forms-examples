@@ -142,27 +142,9 @@ export const  PhoneNumberComponent = (props) => {
           }
         </InputMask>
         <FormFeedback>{JSON.stringify(errors)}</FormFeedback>
-        <span></span>
-          {/* <Input 
-            inputRef={ref} 
-            type="text"
-            name={`${props.model.name}`} 
-            id={`${props.model.name}`} 
-            value={value} 
-            onChange={(e) => setValue(e.target.value)}
-            mask="+3\9 999 9999 999"
-            maskChar="_"
-            alwaysShowMask={true}
-            tag={InputMask}
-          /> */}
-
-
-
-
-
-          {onValidation &&
-            <div><span>Valido </span><Spinner color="warning" size="sm" /></div>
-          }
+        {onValidation &&
+          <div><span>Valido </span><Spinner color="warning" size="sm" /></div>
+        }
       </React.Fragment>
     )
   }
