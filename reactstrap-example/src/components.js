@@ -6,6 +6,8 @@ import { Col, Button, Form, FormGroup, Label, Input, FormFeedback, Row, Spinner 
 
 import InputMask from 'react-input-mask';
 
+import { RXBlockUi } from './utils';
+
 export const BasicButtons = (props) => {
 
     const buttons = props.model.buttons;
@@ -63,9 +65,12 @@ export const ReactStrapForm = (props) => {
       <span style={{color: 'black', marginTop: 40, marginBottom: 40, display: 'block'}}>RXForm Reactstrap</span>
 
       <div style={{backgroundColor: "#eeeeee", padding:12, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
-        <Form>
-          {props.children}
-        </Form>
+        
+        <RXBlockUi>
+          <Form>
+            {props.children}
+          </Form>
+        </RXBlockUi>
 
       </div>
 
