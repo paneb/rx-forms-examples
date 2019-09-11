@@ -139,7 +139,14 @@ export const  App = () => {
           buttonsComponent={BasicButtons}
           events={{
             onButtonPress: (e, name) => {
-              console.log(`in onButtonPress with `, name, form.current.submit());
+
+              console.log(`in onButtonPress with `, name);
+
+              form.current.submit(true)
+              .then((result)=>{
+              console.log(`with submit: `, result);
+
+              });
             },
             onValidation: (errors)=>{
               console.log(`in onValidation: `, JSON.stringify(errors));

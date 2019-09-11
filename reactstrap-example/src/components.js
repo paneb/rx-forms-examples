@@ -97,7 +97,7 @@ export const BasicTextComponent = (props) => {
     return (
       <React.Fragment>
         <AsyncValidationWrapper onValidation={onValidation}>
-          <Input valid={onValidation ? false : errors ? false : value === "" ? false : showValid ? true : false} invalid={onValidation ? false : errors ? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
+          <Input valid={onValidation ? false : errors ? false : value === "" ? false : showValid ? true : false} invalid={onValidation ? false : errors && errors.length > 0 ? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setValue(e.target.value)}></Input>
           {/* <FormFeedback>{JSON.stringify(errors)}</FormFeedback> */}
           {errors && errors.map((error, index)=><FormFeedback key={index}>{props.events.onLocalize(error)}</FormFeedback>)}
         </AsyncValidationWrapper>
@@ -115,8 +115,8 @@ export const BasicNumberComponent = (props) => {
   
     return (
       <React.Fragment>
-          <Input invalid={errors? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setNumberValue(e.target.value)} min={min}></Input>
-          <FormFeedback>{JSON.stringify(errors)}</FormFeedback>
+          <Input invalid={errors && errors.length > 0 ? true : false} innerRef={ref} type={`${props.model.type}`} name={`${props.model.name}`} id={`${props.model.name}`} value={value} onChange={(e) => setNumberValue(e.target.value)} min={min}></Input>
+          {errors && errors.map((error, index)=><FormFeedback key={index}>{props.events.onLocalize(error)}</FormFeedback>)}
       </React.Fragment>
     )
   }
@@ -133,7 +133,7 @@ export const  PhoneNumberComponent = (props) => {
         <InputMask mask="+3\9 999 9999 999" alwaysShowMask={true} maskChar="_" value={value} name={`${props.model.name}`} id={`${props.model.name}`} onChange={(e) => setValue(e.target.value)}>
           {(inputProps) => 
             <Input 
-              invalid={errors? true : false} 
+              invalid={errors && errors.length > 0? true : false} 
               type="text"
               innerRef={ref} 
               name={`${props.model.name}`} 
