@@ -4,7 +4,7 @@ import { RXForm } from 'rx-forms';
 
 import { Container } from 'reactstrap';
 
-// import InputMask from 'react-input-mask';
+import { CountrySelectComponent } from './components/country-component';
 
 import { BasicLayout, BasicButtons, BasicNumberComponent, BasicTextComponent, PhoneNumberComponent, ReactStrapForm} from './components'
 
@@ -29,6 +29,7 @@ const model = {
     {name: "name", type: "text", label: "Nome:", showValid: true, validators: ["empty"]},
     {name: "email", type: "text", label: "Mail:", validators: ["empty"]},
     {name: "emailconfirm", type: "text", label: "Conferma Mail:", validators: ["emailCheck", "empty"]},
+    {name: "country", type: "country", label: "Nazione:", validators: []},
     {name: "phone", type: "phone", label: "Numero di Telefono:", validators: []},
     {name: "age", type: "number", label: "Età:", min: 18, validators: ["rated18"]},
   ],
@@ -80,7 +81,8 @@ const layouts = {
 const components = {
   text: BasicTextComponent,
   phone: PhoneNumberComponent,
-  number: BasicNumberComponent
+  number: BasicNumberComponent,
+  country: CountrySelectComponent
 }
 
 const loadLocales = (setInitDone, currentLocale, forceUpdate) => {
@@ -162,10 +164,11 @@ export const  App = () => {
             }
           }}
           data={{
-            name: "",
+            name: "Francesco",
             surname: "Cabras",
             email: "francesco.cabras@gmail.com",
-            age: 39
+            age: 39,
+            country: {value: "IT", label: "Italy"}
           }} 
           validators={validators}
         />

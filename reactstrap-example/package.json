@@ -10,6 +10,8 @@
     "react-input-mask": "^2.0.4",
     "react-intl-universal": "^2.1.4",
     "react-scripts": "3.1.1",
+    "react-select": "^3.0.4",
+    "react-select-country-list": "^2.0.1",
     "reactstrap": "^8.0.1"
   },
   "scripts": {
