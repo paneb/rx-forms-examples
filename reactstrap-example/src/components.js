@@ -66,7 +66,7 @@ export const ReactStrapForm = (props) => {
 
       <div style={{backgroundColor: "#eeeeee", padding:12, borderTopLeftRadius: 12, borderTopRightRadius: 12, borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
         
-        <RXBlockUi>
+        <RXBlockUi blocking={props.formParams.blockUiVisible}>
           <Form>
             {props.children}
           </Form>

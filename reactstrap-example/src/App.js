@@ -112,6 +112,8 @@ export const  App = () => {
   const [ currentLocale, setCurrentLocale ] = useState("en-US");
   const [, forceUpdate] = useState();
 
+  const [blockUiVisible, setBlockUiVisible] = useState(false);
+
   useEffect(()=>{
 
       // setCurrentLocale("en-US");
@@ -137,15 +139,20 @@ export const  App = () => {
           components={components} 
           model={model}
           buttonsComponent={BasicButtons}
+          formParams={{
+            blockUiVisible: blockUiVisible
+          }}
           events={{
             onButtonPress: (e, name) => {
 
               console.log(`in onButtonPress with `, name);
+              //SetBlock 
+              setBlockUiVisible(true);
 
               form.current.submit(true)
               .then((result)=>{
-              console.log(`with submit: `, result);
-
+                console.log(`with submit: `, result);
+                setBlockUiVisible(false);
               });
             },
             onValidation: (errors)=>{

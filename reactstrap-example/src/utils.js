@@ -1,6 +1,7 @@
 import BlockUi from 'react-block-ui';
 import { Loader, Types } from 'react-loaders'; 
-import React from 'react';
+import React, { useState, useEffect, useRef} from 'react';
+
 
 import 'react-block-ui/style.css';
 import 'loaders.css/loaders.min.css';
@@ -27,8 +28,13 @@ export const RXBlockColor = {
 export const RXBlockUi = (props) => {
 
     return (
-        <div>
+        <BlockUi
+            blocking={props.blocking}
+            loader={
+                <Loader active={true} type="line-scale-pulse-out" color={RXBlockColor.PRIMARY} />
+            }
+        >
             {props.children}
-        </div>
+        </BlockUi>
     )
 }
